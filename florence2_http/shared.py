@@ -1,5 +1,5 @@
 from enum import Enum
-from dataclasses import dataclass
+
 
 class FlorenceTask(Enum):
     CAPTION = "<CAPTION>"
@@ -17,9 +17,9 @@ class FlorenceTask(Enum):
     OCR = "<OCR>"
     OCR_WITH_REGION = "<OCR_WITH_REGION>"
 
+
 class FlorenceModel(Enum):
-    BASE = "microsoft/Florence-2-base" 
+    BASE = "microsoft/Florence-2-base"
     LARGE = "microsoft/Florence-2-large"
     BASE_FT = "microsoft/Florence-2-base-ft"
     LARGE_FT = "microsoft/Florence-2-large-ft"
-

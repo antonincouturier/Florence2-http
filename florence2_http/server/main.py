@@ -6,14 +6,15 @@ from florence2_http.shared import FlorenceModel
 
 app = FastAPI()
 
-model_type = FlorenceModel.BASE 
+model_type = FlorenceModel.BASE
 model = Florence2(model_type)
+
 
 @app.post("/run_task", response_model=TaskResponse)
 async def run_task(request: TaskRequest):
     result = model.run_task(
         task=request.task,
         image_base64=request.image_base64,
-        text_input=request.text_input
+        text_input=request.text_input,
     )
     return TaskResponse(result=result)
