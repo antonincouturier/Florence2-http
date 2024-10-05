@@ -105,7 +105,7 @@ class Florence2Client:
     def segmentation(
         self,
         image: Path,
-        mode=SegmentationMode,
+        mode: SegmentationMode,
         prompt: Optional[str] = None,
         region: Optional[Region] = None,
     ) -> Dict:
