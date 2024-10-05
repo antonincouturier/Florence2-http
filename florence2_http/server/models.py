@@ -9,7 +9,7 @@ from transformers import AutoProcessor, AutoModelForCausalLM
 import torch
 from PIL import Image
 
-from florence2_http.shared.enums import FlorenceModel, FlorenceTask
+from florence2_http.shared import FlorenceModel, FlorenceTask
 
 class Florence2:
     def __init__(self, model_type: FlorenceModel):
@@ -19,11 +19,11 @@ class Florence2:
         self.processor = AutoProcessor.from_pretrained(model_id, trust_remote_code=True)
 
     def run_task(self, task: FlorenceTask, image_base64: str, text_input: Optional[str] = None) -> Dict:
-        prompt = FlorenceTask.value
+        prompt = task.value
         if text_input is not None:
             prompt = f"{prompt}{text_input}"
-        image_bytes = base64.base64decode(image_base64)
-        image = Image.opne(BytesIO(image_bytes))
+        image_bytes = base64.b64decode(image_base64)
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
         inputs = self.processor(text=prompt, images=image, return_tensors="pt").to(self.device, torch.float16)
         generated_ids = self.model.generate(
             input_ids=inputs["input_ids"],
