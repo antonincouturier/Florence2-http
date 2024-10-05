@@ -23,7 +23,7 @@ from pathlib import Path
 from florence2_http.client import Florence2Client, CaptionVerbosity
 
 client = Florence2Client("http://127.0.0.1:8000")
-image_path = Path("/path/to/image.png")
+image_path = Path("data/car.jpg")
 caption = client.caption(image=image_path)
 print(caption)
 caption = client.caption(image=image_path, verbosity=CaptionVerbosity.DETAILED)
@@ -39,17 +39,17 @@ from pathlib import Path
 from florence2_http.client import Florence2Client, ObjectDetectionMode, Region
 
 client = Florence2Client("http://127.0.0.1:8000")
-image_path = Path("/path/to/image.png")
-prompt = "prompt"
-region = Region(x1=250, y1=250, x2=750, y2=750)
+image_path = Path("data/car.jpg")
 result = client.object_detection(image=image_path)
 print(result)
 result = client.object_detection(image=image_path, mode=ObjectDetectionMode.DENSE_CAPTION)
 print(result)
 result = client.object_detection(image=image_path, mode=ObjectDetectionMode.REGION_PROPOSAL)
 print(result)
+prompt = "A green car parked in front of a yellow building."
 result = client.object_detection(image=image_path, mode=ObjectDetectionMode.CAPTION_GROUNDING, prompt=prompt)
 print(result)
+region = Region(x1=52, y1=332, x2=932, y2=774)
 result = client.object_detection(image=image_path, mode=ObjectDetectionMode.REGION_CATEGORY, region=region)
 print(result)
 result = client.object_detection(image=image_path, mode=ObjectDetectionMode.REGION_DESCRIPTION, region=region)
@@ -63,11 +63,11 @@ from pathlib import Path
 from florence2_http.client import Florence2Client, SegmentationMode, Region
 
 client = Florence2Client("http://127.0.0.1:8000")
-image_path = Path("/path/to/image.png")
-prompt = "prompt"
-region = Region(x1=250, y1=250, x2=750, y2=750)
+image_path = Path("data/car.jpg")
+prompt = "a green car"
 result = client.segmentation(image=image_path, prompt=prompt)
 print(result)
+region = Region(x1=702, y1=575, x2=866, y2=772)
 result = client.segmentation(image=image_path, mode=SegmentationMode.REGION, region=region)
 print(result)
 ```
@@ -76,14 +76,14 @@ print(result)
 ```python
 from pathlib import Path
 
-from florence2_http.client import Florence2Client, Region
+from florence2_http.client import Florence2Client
 
 client = Florence2Client("http://127.0.0.1:8000")
-image_path = Path("/path/to/image.png")
-region = Region(x1=250, y1=250, x2=750, y2=750)
+image_path = Path("data/cuda_book.jpg")
 result = client.ocr(image=image_path)
 print(result)
-result = client.ocr(image=image_path, region=region)
+result = client.ocr(image=image_path, find_bbox=True)
+print(result)
 ```
 
 ## Florence2 supported tasks and required inputs 
