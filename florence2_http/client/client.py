@@ -7,7 +7,7 @@ from pathlib import Path
 from enum import Enum, auto
 from dataclasses import dataclass
 
-from florence2_http.shared import FlorenceTask, Region
+from florence2_http.shared import FlorenceTask
 
 class CaptionVerbosity(Enum):
     SIMPLE = auto()
@@ -41,10 +41,11 @@ class Florence2Client:
         "Given Path to image, encode image to base64"
         assert image.exists(), f"Cannot find image {image}"
         with open(image, "rb") as f:
-            return base64.b64encode(f.read())
+            return base64.b64encode(f.read()).decode("utf-8")
         return None
 
     def _post_request(self, payload: Dict) -> Dict:
+        print(f"Sending payload for task {payload['task']}")
         response = requests.post(f"{self.url}/run_task", json=payload)
         response.raise_for_status()
         return response.json()["result"]
