@@ -2,7 +2,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict
 
-from florence2_http.shared import FlorenceTask, Region
+from florence2_http.shared import FlorenceTask
 
 class TaskRequest(BaseModel):
     task: FlorenceTask = Field(..., description="Task to perform")
@@ -10,4 +10,4 @@ class TaskRequest(BaseModel):
     text_input: Optional[str] = Field(None, description="Additional text input")
     
 class TaskResponse(BaseModel):
-    result: Dict = Field(..., description="Result from model")"
+    result: Dict = Field(..., description="Result from model")
