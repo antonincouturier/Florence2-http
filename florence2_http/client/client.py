@@ -10,14 +10,16 @@ from florence2_http.shared import FlorenceTask
 
 
 class CaptionVerbosity(Enum):
-    """ Supported levels of verbosity for captioning tasks"""
+    """Supported levels of verbosity for captioning tasks"""
+
     SIMPLE = auto()
     DETAILED = auto()
     VERY_DETAILED = auto()
 
 
 class ObjectDetectionMode(Enum):
-    """ Supported object detection subtasks """
+    """Supported object detection subtasks"""
+
     DEFAULT = auto()
     DENSE_CAPTION = auto()
     REGION_PROPOSAL = auto()
@@ -28,14 +30,16 @@ class ObjectDetectionMode(Enum):
 
 
 class SegmentationMode(Enum):
-    """ Supported segmentation subtasks """
+    """Supported segmentation subtasks"""
+
     REFERRING_EXPRESSION = auto()
     REGION = auto()
 
 
 @dataclass
 class Region:
-    """ Data class for regions """
+    """Data class for regions"""
+
     x1: int
     y1: int
     x2: int
@@ -46,8 +50,8 @@ class Florence2Client:
     """
     Main entry point for interacting with the Florence 2 HTTP server.
 
-    This client provides methods for captioning, object detection, segmentation, 
-    and optical character recognition on images. The images are encoded 
+    This client provides methods for captioning, object detection, segmentation,
+    and optical character recognition on images. The images are encoded
     in base64 format and sent to the server for processing
 
     Parameters
@@ -55,6 +59,7 @@ class Florence2Client:
     url : str
         Url of HTTP server
     """
+
     def __init__(self, url: str):
         self.url = url.rstrip("/")
 
@@ -187,16 +192,17 @@ class Florence2Client:
         image_base64 = self._encode_image(image)
         task = task_mapping[mode]
         payload = {"task": task.value, "image_base64": image_base64}
-        if task in [FlorenceTask.CAPTION_TO_PHRASE_GROUNDING, FlorenceTask.OPEN_VOCABULARY_DETECTION]:
+        if task in [
+            FlorenceTask.CAPTION_TO_PHRASE_GROUNDING,
+            FlorenceTask.OPEN_VOCABULARY_DETECTION,
+        ]:
             assert prompt is not None, f"Mode {mode} requires prompt input"
             payload["text_input"] = prompt
         elif task in [
             FlorenceTask.REGION_TO_CATEGORY,
             FlorenceTask.REGION_TO_DESCRIPTION,
         ]:
-            assert (
-                region is not None
-            ), f"Mode {mode} requires region input"
+            assert region is not None, f"Mode {mode} requires region input"
             payload["text_input"] = (
                 f"<loc_{region.x1}><loc_{region.y1}><loc_{region.x2}><loc_{region.y2}>"
             )
@@ -244,14 +250,10 @@ class Florence2Client:
         task = task_mapping[mode]
         payload = {"task": task.value, "image_base64": image_base64}
         if task is FlorenceTask.REFERRING_EXPRESSION_SEGMENTATION:
-            assert (
-                prompt is not None
-            ), f"Mode {mode} requires prompt input"
+            assert prompt is not None, f"Mode {mode} requires prompt input"
             payload["text_input"] = prompt
         elif task is FlorenceTask.REGION_TO_SEGMENTATION:
-            assert (
-                region is not None
-            ), f"Mode {mode} requires region input"
+            assert region is not None, f"Mode {mode} requires region input"
             payload["text_input"] = (
                 f"<loc_{region.x1}><loc_{region.y1}><loc_{region.x2}><loc_{region.y2}>"
             )

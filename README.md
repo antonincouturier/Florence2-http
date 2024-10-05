@@ -65,7 +65,7 @@ result = client.object_detection(image=image_path, mode=ObjectDetectionMode.REGI
 print(result)
 # Open vocabulary detection 
 prompt = "a green car"
-result = client.object_detection(image=image_path, mode=ObjectDetectionMode.OPEN_VOCABULARY, region=region)
+result = client.object_detection(image=image_path, mode=ObjectDetectionMode.OPEN_VOCABULARY, prompt=prompt)
 print(result)
 ```
 
