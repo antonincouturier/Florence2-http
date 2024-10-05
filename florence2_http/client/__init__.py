@@ -1,1 +1,2 @@
-from .client import Florence2Client, CaptionVerbosity, ObjectDetectionMode, SegmentationMode, Region
+from .client import (CaptionVerbosity, Florence2Client, ObjectDetectionMode,
+                     Region, SegmentationMode)

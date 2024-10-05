@@ -2,7 +2,7 @@ import base64
 from dataclasses import dataclass
 from enum import Enum, auto
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 import requests
 
@@ -56,17 +56,17 @@ class Florence2Client:
 
     def caption(
         self, image: Path, verbosity: CaptionVerbosity = CaptionVerbosity.SIMPLE
-    ):
-        # TODO return type
+    ) -> str:
         task_mapping = {
             CaptionVerbosity.SIMPLE: FlorenceTask.CAPTION,
             CaptionVerbosity.DETAILED: FlorenceTask.DETAILED_CAPTION,
             CaptionVerbosity.VERY_DETAILED: FlorenceTask.MORE_DETAILED_CAPTION,
         }
+        task = task_mapping[verbosity].value
         image_base64 = self._encode_image(image)
-        payload = {"task": task_mapping[verbosity].value, "image_base64": image_base64}
+        payload = {"task": task, "image_base64": image_base64}
         result = self._post_request(payload)
-        return result
+        return result[task]
 
     def object_detection(
         self,
@@ -74,8 +74,7 @@ class Florence2Client:
         mode: ObjectDetectionMode = ObjectDetectionMode.DEFAULT,
         prompt: Optional[str] = None,
         region: Optional[Region] = None,
-    ):
-        # TODO return type
+    ) -> Union[Dict, str]:
         task_mapping = {
             ObjectDetectionMode.DEFAULT: FlorenceTask.OBJECT_DETECTION,
             ObjectDetectionMode.DENSE_CAPTION: FlorenceTask.DENSE_REGION_CAPTION,
@@ -101,7 +100,7 @@ class Florence2Client:
                 f"<loc_{region.x1}><loc_{region.y1}><loc_{region.x2}><loc_{region.y2}>"
             )
         result = self._post_request(payload)
-        return result
+        return result[task.value]
 
     def segmentation(
         self,
@@ -109,7 +108,7 @@ class Florence2Client:
         mode=SegmentationMode,
         prompt: Optional[str] = None,
         region: Optional[Region] = None,
-    ):
+    ) -> Dict:
         task_mapping = {
             SegmentationMode.REFERRING_EXPRESSION: FlorenceTask.REFERRING_EXPRESSION_SEGMENTATION,
             SegmentationMode.REGION: FlorenceTask.REGION_TO_SEGMENTATION,
@@ -132,9 +131,9 @@ class Florence2Client:
         else:
             return None
         result = self._post_request(payload)
-        return result
+        return result[task.value]
 
-    def ocr(self, image: Path, region: Optional[Region] = None):
+    def ocr(self, image: Path, region: Optional[Region] = None) -> Union[Dict, str]:
         image_base64 = self._encode_image(image)
         payload = {"image_base64": image_base64}
         task = FlorenceTask.OCR.value
@@ -145,4 +144,4 @@ class Florence2Client:
             )
         payload["task"] = task
         result = self._post_request(payload)
-        return result
+        return result[task]
