@@ -14,14 +14,76 @@ uvicorn florence2_http.server.main:app --reload
 ```
 
 ## Run client 
+
+### Captioning 
+
 ```python
 from pathlib import Path
 
-from florence2_http.client import Florence2Client
+from florence2_http.client import Florence2Client, CaptionVerbosity
 
 client = Florence2Client("http://127.0.0.1:8000")
 image_path = Path("/path/to/image.png")
 caption = client.caption(image=image_path)
+print(caption)
+caption = client.caption(image=image_path, verbosity=CaptionVerbosity.DETAILED)
+print(caption)
+caption = client.caption(image=image_path, verbosity=CaptionVerbosity.VERY_DETAILED)
+print(caption)
+```
+
+### Object detection 
+```python
+from pathlib import Path
+
+from florence2_http.client import Florence2Client, ObjectDetectionMode, Region
+
+client = Florence2Client("http://127.0.0.1:8000")
+image_path = Path("/path/to/image.png")
+prompt = "prompt"
+region = Region(x1=250, y1=250, x2=750, y2=750)
+result = client.object_detection(image=image_path)
+print(result)
+result = client.object_detection(image=image_path, mode=ObjectDetectionMode.DENSE_CAPTION)
+print(result)
+result = client.object_detection(image=image_path, mode=ObjectDetectionMode.REGION_PROPOSAL)
+print(result)
+result = client.object_detection(image=image_path, mode=ObjectDetectionMode.CAPTION_GROUNDING, prompt=prompt)
+print(result)
+result = client.object_detection(image=image_path, mode=ObjectDetectionMode.REGION_CATEGORY, region=region)
+print(result)
+result = client.object_detection(image=image_path, mode=ObjectDetectionMode.REGION_DESCRIPTION, region=region)
+print(result)
+```
+
+### Segmentation 
+```python
+from pathlib import Path
+
+from florence2_http.client import Florence2Client, SegmentationMode, Region
+
+client = Florence2Client("http://127.0.0.1:8000")
+image_path = Path("/path/to/image.png")
+prompt = "prompt"
+region = Region(x1=250, y1=250, x2=750, y2=750)
+result = client.segmentation(image=image_path, prompt=prompt)
+print(result)
+result = client.segmentation(image=image_path, mode=SegmentationMode.REGION, region=region)
+print(result)
+```
+
+### OCR
+```python
+from pathlib import Path
+
+from florence2_http.client import Florence2Client, Region
+
+client = Florence2Client("http://127.0.0.1:8000")
+image_path = Path("/path/to/image.png")
+region = Region(x1=250, y1=250, x2=750, y2=750)
+result = client.ocr(image=image_path)
+print(result)
+result = client.ocr(image=image_path, region=region)
 ```
 
 ## Florence2 supported tasks and required inputs 
