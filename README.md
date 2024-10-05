@@ -1,6 +1,14 @@
 # Florence2 HTTP
 
- Web service that exposes Microsoft’s Florence-2 model behind an HTTP server.
+ Web service that exposes Microsoft’s Florence-2 model (via HuggingFace) behind an HTTP server (via FastAPI, uvicorn, pydantic models).
+
+## Components 
+
+- **Client Library (`client`):** Provides a `Florence2Client` class with methods corresponding to different tasks. Handles image encoding, request formation, and response parsing.
+- **Server (`server`):** Hosts the FastAPI application, defines API endpoints, and handles requests by invoking the Florence-2 model.
+- **Models (`server/models.py`):** Contains the `Florence2` class that wraps model loading and inference logic.
+- **Schemas (`server/schemas.py`):** Defines Pydantic models for request and response data structures.
+- **Shared Definitions (`shared.py`):** Contains enumerations for tasks and model types, ensuring consistency between client and server.
 
 ## Install 
 ```bash
@@ -12,6 +20,9 @@ pip install .
 ```bash
 uvicorn florence2_http.server.main:app --reload
 ```
+
+By default, the server uses the `Florence-2-base` model. To change the model edit `server/main.py` to use e.g `FlorenceModel.LARGE`.
+
 
 ## Run client 
 
@@ -121,5 +132,4 @@ print(result)
 | Region to Description           | Generate description of object in specific region of input image based on quantized input coordinates ([x1, y1, x2, y2] in [0, 999]).                                  | Image, Coordinates                       | client.object_detection(image_path, mode=ObjectDetectionMode.REGION_DESCRIPTION, region=Region(x1, y1, x2, y2))|
 | OCR                             | Extract text in the input image                                                                                                                                        | Image                                    | client.ocr(image_path)                |
 | OCR with Region                 | Generate bounding boxes for regions of text in the input image and extract text.                                                                                       | Image                                    | client.ocr(image_path, find_bbox=True)    |
-
 
