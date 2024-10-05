@@ -63,6 +63,10 @@ print(result)
 # Region to Description
 result = client.object_detection(image=image_path, mode=ObjectDetectionMode.REGION_DESCRIPTION, region=region)
 print(result)
+# Open vocabulary detection 
+prompt = "a green car"
+result = client.object_detection(image=image_path, mode=ObjectDetectionMode.OPEN_VOCABULARY, region=region)
+print(result)
 ```
 
 ### Segmentation 

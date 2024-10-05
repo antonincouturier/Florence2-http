@@ -24,6 +24,7 @@ class ObjectDetectionMode(Enum):
     CAPTION_GROUNDING = auto()
     REGION_CATEGORY = auto()
     REGION_DESCRIPTION = auto()
+    OPEN_VOCABULARY = auto()
 
 
 class SegmentationMode(Enum):
@@ -181,12 +182,13 @@ class Florence2Client:
             ObjectDetectionMode.CAPTION_GROUNDING: FlorenceTask.CAPTION_TO_PHRASE_GROUNDING,
             ObjectDetectionMode.REGION_CATEGORY: FlorenceTask.REGION_TO_CATEGORY,
             ObjectDetectionMode.REGION_DESCRIPTION: FlorenceTask.REGION_TO_DESCRIPTION,
+            ObjectDetectionMode.OPEN_VOCABULARY: FlorenceTask.OPEN_VOCABULARY_DETECTION,
         }
         image_base64 = self._encode_image(image)
         task = task_mapping[mode]
         payload = {"task": task.value, "image_base64": image_base64}
-        if task is FlorenceTask.CAPTION_TO_PHRASE_GROUNDING:
-            assert prompt is not None, "Cannot use caption grounding without a prompt"
+        if task in [FlorenceTask.CAPTION_TO_PHRASE_GROUNDING, FlorenceTask.OPEN_VOCABULARY_DETECTION]:
+            assert prompt is not None, f"Mode {mode} requires prompt input"
             payload["text_input"] = prompt
         elif task in [
             FlorenceTask.REGION_TO_CATEGORY,
@@ -194,7 +196,7 @@ class Florence2Client:
         ]:
             assert (
                 region is not None
-            ), "Cannot use region tasks in object detection without providing a region"
+            ), f"Mode {mode} requires region input"
             payload["text_input"] = (
                 f"<loc_{region.x1}><loc_{region.y1}><loc_{region.x2}><loc_{region.y2}>"
             )
@@ -244,12 +246,12 @@ class Florence2Client:
         if task is FlorenceTask.REFERRING_EXPRESSION_SEGMENTATION:
             assert (
                 prompt is not None
-            ), "Cannot use referring expression without a prompt"
+            ), f"Mode {mode} requires prompt input"
             payload["text_input"] = prompt
         elif task is FlorenceTask.REGION_TO_SEGMENTATION:
             assert (
                 region is not None
-            ), "Cannot use region task in segmentation without providing a region"
+            ), f"Mode {mode} requires region input"
             payload["text_input"] = (
                 f"<loc_{region.x1}><loc_{region.y1}><loc_{region.x2}><loc_{region.y2}>"
             )
