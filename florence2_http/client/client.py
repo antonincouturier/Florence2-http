@@ -133,15 +133,11 @@ class Florence2Client:
         result = self._post_request(payload)
         return result[task.value]
 
-    def ocr(self, image: Path, region: Optional[Region] = None) -> Union[Dict, str]:
+    def ocr(self, image: Path, find_bbox: bool = False) -> Union[Dict, str]:
         image_base64 = self._encode_image(image)
-        payload = {"image_base64": image_base64}
         task = FlorenceTask.OCR.value
-        if region is not None:
+        if find_bbox:
             task = FlorenceTask.OCR_WITH_REGION.value
-            payload["text_input"] = (
-                f"<loc_{region.x1}><loc_{region.y1}><loc_{region.x2}><loc_{region.y2}>"
-            )
-        payload["task"] = task
+        payload = {"image_base64": image_base64, "task": task}
         result = self._post_request(payload)
         return result[task]

@@ -102,7 +102,7 @@ print(result)
 | Region to Category              | Generate label of object in specific region of input image based on quantized input coordinates ([x1, y1, x2, y2] in [0, 999]).                                        | Image, Coordinates                       | client.object_detection(image_path, mode=ObjectDetectionMode.REGION_CATEGORY, region=Region(x1, y1, x2, y2))  |
 | Region to Description           | Generate description of object in specific region of input image based on quantized input coordinates ([x1, y1, x2, y2] in [0, 999]).                                  | Image, Coordinates                       | client.object_detection(image_path, mode=ObjectDetectionMode.REGION_DESCRIPTION, region=Region(x1, y1, x2, y2))|
 | OCR                             | Extract text in the input image                                                                                                                                        | Image                                    | client.ocr(image_path)                |
-| OCR with Region                 | Generate bounding boxes for regions of text in the input image and extract text.                                                                                       | Image                                    | client.ocr(image_path, region=Region(x1, y1, x2, y2))    |
+| OCR with Region                 | Generate bounding boxes for regions of text in the input image and extract text.                                                                                       | Image                                    | client.ocr(image_path, find_bbox=True)    |
 
 # TODO also include open vocabulary detection
 
